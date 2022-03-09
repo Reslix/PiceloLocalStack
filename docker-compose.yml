@@ -1,4 +1,11 @@
 services:
+  redis: 
+    image: redis:7.0-rc2
+    container_name: redis-local
+    ports: 
+      - 6379:6379
+    command: redis-server --loglevel warning --requirepass ${AWS_SECRET_ACCESS_KEY}
+
   dynamodb:
     image: amazon/dynamodb-local:latest
     container_name: dynamodb-local
@@ -27,6 +34,18 @@ services:
 
     working_dir: /home/minios3
     command: "server ./scryer --console-address :9001"
+
+  mc:
+    image: minio/mc
+    depends_on:
+      - s3
+    container_name: mcbkp
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set scryer http://s3:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY};
+      /usr/bin/mc mb scryer/scryerimagerepo;
+      /usr/bin/mc policy set public scryer/scryerimagerepo;"
+      
 
   prometheus:
     image: prom/prometheus
