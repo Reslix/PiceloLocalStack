@@ -33,7 +33,7 @@ services:
       MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
 
     working_dir: /home/minios3
-    command: "server ./scryer --console-address :9001"
+    command: "server ./picelo --console-address :9001"
 
   mc:
     image: minio/mc
@@ -42,9 +42,9 @@ services:
     container_name: mcbkp-local
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc alias set scryer http://s3:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY};
-      /usr/bin/mc mb scryer/scryerimagerepo;
-      /usr/bin/mc policy set public scryer/scryerimagerepo;"
+      /usr/bin/mc alias set picelo http://s3:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY};
+      /usr/bin/mc mb picelo/piceloimagerepo;
+      /usr/bin/mc policy set public picelo/piceloimagerepo;"
       
   prometheus:
     image: prom/prometheus
